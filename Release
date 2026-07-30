@@ -6,3 +6,4 @@ Codename: cydia-ios
 Architectures: iphoneos-arm
 Components: main
 Description: <Your Repo’s Display Name>
+Icon: http://lachie-kid.github.io/Lucky-s-cydia-repo/CydiaIcon.png?v=2
