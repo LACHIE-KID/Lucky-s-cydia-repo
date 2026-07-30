@@ -17,6 +17,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y dpkg-dev build-essential
 
+      - name: Create DEBIAN control directory if missing
+        run: |
+          mkdir -p "My First App/DEBIAN"
+          if [ ! -f "My First App/DEBIAN/control" ]; then
+            echo "Package: com.example.myfirstapp" > "My First App/DEBIAN/control"
+            echo "Name: My First App" >> "My First App/DEBIAN/control"
+            echo "Version: 1.0.0" >> "My First App/DEBIAN/control"
+            echo "Architecture: iphoneos-arm" >> "My First App/DEBIAN/control"
+            echo "Maintainer: Lachie-Kid" >> "My First App/DEBIAN/control"
+            echo "Description: A custom Cydia application package." >> "My First App/DEBIAN/control"
+          fi
+
       - name: Build package
         run: |
           mkdir -p debs
