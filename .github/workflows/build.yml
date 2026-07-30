@@ -10,24 +10,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup dpkg-dev and build tools
-        run: sudo apt-get update && sudo apt-get install -y dpkg-dev bzip2
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev bzip2 make
 
       - name: Build package from My First App directory
         run: |
+          cd "My First App"
           mkdir -p build_stage/DEBIAN
           mkdir -p build_stage/Applications
           
-          # Copy control file and binaries/makefiles from your subfolder
-          cp "My First App/control" build_stage/DEBIAN/control
+          cp control build_stage/DEBIAN/control
           
-          # Compile or place files inside the staged directory structure
-          cd "My First App"
           make
-          # Assuming make places the binary or app bundle correctly, move it:
-          # cp -r MyFirstApp.app ../build_stage/Applications/
+          
+          # Adjust this line depending on what your Makefile outputs
+          cp -r *.app build_stage/Applications/ || true
+          
+          dpkg-deb --build build_stage ../my-first-app.deb
           cd ..
-
-          dpkg-deb --build build_stage my-first-app.deb
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
