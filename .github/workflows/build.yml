@@ -9,27 +9,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup dpkg-dev and build tools
-        run: sudo apt-get update && sudo apt-get install -y dpkg-dev bzip2 make
-
-      - name: Build package from My First App directory
+      - name: Install Theos and dependencies
         run: |
-          cd "My First App"
-          mkdir -p build_stage/DEBIAN
-          mkdir -p build_stage/Applications
-          
-          cp control build_stage/DEBIAN/control
-          
-          make
-          
-          # Adjust this line depending on what your Makefile outputs
-          cp -r *.app build_stage/Applications/ || true
-          
-          dpkg-deb --build build_stage ../my-first-app.deb
-          cd ..
+          sudo apt-get update && sudo apt-get install -y dpkg-dev bzip2 make git clang ldid
+          git clone --recursive https://github.com/theos/theos.git ~/theos
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: cydia-package
-          path: my-first-app.deb
+      - name: Build package with Theos
+        run: |
+          export THEOS=~/theos
+          cd "My First App"
+          make package
