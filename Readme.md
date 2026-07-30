@@ -16,4 +16,4 @@ Welcome to **Lucky's Cydia Repo**! This is a custom Cydia repository hosted via 
 3. Tap **Edit** (top right) $\rightarrow$ **Add** (top left).
 4. Enter the following URL:
    ```text
-   https://github.com/LACHIE-KID/Lucky-s-cydia-repo.git
+   http://lachie-kid.github.io/Lucky-s-cydia-repo/
