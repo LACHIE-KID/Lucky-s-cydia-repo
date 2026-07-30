@@ -9,30 +9,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fix path and build with Theos
+      - name: Setup dpkg-dev and build tools
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev bzip2
+
+      - name: Package existing build files
         run: |
-          sudo apt-get update
-          sudo apt-get install -y dpkg-dev bzip2 make git clang software-properties-common
-          sudo add-apt-repository universe
-          sudo apt-get update
-          sudo apt-get install -y ldid || {
-            sudo wget -O /usr/bin/ldid https://github.com/ProcursusTeam/ldid/releases/download/v2.1.5-procursus7/ldid_linux_x86_64
-            sudo chmod +x /usr/bin/ldid
-          }
-
-          git clone --recursive https://github.com/theos/theos.git ~/theos
-          export THEOS=~/theos
-
-          # Move project to a path without spaces to satisfy Theos
-          mkdir -p ~/safe_workspace
-          cp -r "My First App" ~/safe_workspace/MyFirstApp
-          cd ~/safe_workspace/MyFirstApp
-
-          make package
-          cp packages/*.deb ~/work/Lucky-s-cydia-repo/Lucky-s-cydia-repo/
+          mkdir -p build_stage/DEBIAN
+          mkdir -p build_stage/Applications
+          
+          cp "My First App/control" build_stage/DEBIAN/control
+          
+          dpkg-deb --build build_stage my-first-app.deb
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: cydia-package
-          path: '*.deb'
+          path: my-first-app.deb
