@@ -9,13 +9,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Theos and dependencies
+      - name: Add repositories and install dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y dpkg-dev bzip2 make git clang ldid
-          git clone --recursive https://github.com/theos/theos.git ~/theos
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common dpkg-dev bzip2 make git clang
+          
+          # Add universe repository for ldid or use alternative tool source if needed
+          sudo add-apt-repository universe
+          sudo apt-get update
+          
+          # Install ldid or download standalone binary if package is missing
+          sudo apt-get install -y ldid || {
+            echo "Installing ldid manually..."
+            sudo wget -O /usr/bin/ldid https://github.com/ProcursusTeam/ldid/releases/download/v2.1.5-procursus7/ldid_linux_x86_64
+            sudo chmod +x /usr/bin/ldid
+          }
 
-      - name: Build package with Theos
+      - name: Setup Theos and build package
         run: |
+          git clone --recursive https://github.com/theos/theos.git ~/theos
           export THEOS=~/theos
           cd "My First App"
           make package
