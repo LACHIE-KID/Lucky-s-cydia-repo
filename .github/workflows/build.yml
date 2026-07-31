@@ -20,14 +20,16 @@ jobs:
           cp "My First App/control" build_stage/DEBIAN/control
           
           dpkg-deb --build build_stage my-first-app.deb
+          
+          mkdir -p debs
+          mv my-first-app.deb debs/
 
       - name: Run UpdateRepo script
         run: |
-          chmod +x UpdateRepo.sh
-          ./UpdateRepo.sh
+          bash UpdateRepo.sh
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: cydia-package
-          path: my-first-app.deb
+          path: debs/my-first-app.deb
